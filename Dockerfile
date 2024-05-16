@@ -1,6 +1,6 @@
 #docker build -t werleja1/nodejs-server:latest . 
 #docker push werleja1/nodejs-server:latest   
-#az webapp create --resource-group mdm_project_2 --plan mdm_project_2 --name mdm-project-2-server --deployment-container-image-name werleja1/nodejs-server:latest
+#az webapp create --resource-group mdmproject2 --plan mdmproject2 --name mdm-project-2-server --deployment-container-image-name werleja1/nodejs-server:latest
 
 
 # Use an official Node.js runtime as a parent image
