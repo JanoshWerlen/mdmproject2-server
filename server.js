@@ -8,7 +8,6 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const WS_PORT = process.env.WS_PORT || 8081; // You can also set this port in your environment variables
 
 // Ensure the upload directory exists
 const uploadDirectory = path.join(__dirname, 'display');
@@ -43,9 +42,19 @@ app.use((req, res, next) => {
 app.use('/display', express.static(uploadDirectory));
 
 // WebSocket server setup
-const wss = new WebSocket.Server({ port: WS_PORT });
+const server = app.listen(PORT, () => {
+    console.log(`HTTP server running on port ${PORT}`);
+});
+
+const wss = new WebSocket.Server({ server });
 wss.on('connection', function connection(ws) {
     console.log('WebSocket client connected');
+    ws.on('close', function close(code, reason) {
+        console.log(`WebSocket client disconnected. Code: ${code}, Reason: ${reason}`);
+    });
+    ws.on('error', function error(err) {
+        console.error('WebSocket error:', err);
+    });
     ws.on('message', function incoming(message) {
         console.log('Message from client:', message);
         // Broadcast to all clients
@@ -80,9 +89,3 @@ app.post('/display', upload.single('image'), (req, res) => {
     res.status(200).send({ imagePath });
     console.log("Image Path sent: " + imagePath);
 });
-
-// Start HTTP server
-app.listen(PORT, () => {
-    console.log(`HTTP server running on port ${PORT}`);
-});
-
